@@ -14,7 +14,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
         with:
-          ref: main # Asegura que se hace checkout en la rama main
+          node-version: '20' # Fuerza el uso de Node.js 20 para esta acción
 
       # Paso 2: Instalar las dependencias necesarias usando npm
       - name: Install dependencies
