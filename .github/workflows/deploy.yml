@@ -1,0 +1,34 @@
+name: Deploy to Railway
+
+# Este workflow se activa cuando hay un push a la rama 'main'
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    # Especifica que el job se ejecutará en un runner con Ubuntu
+    runs-on: ubuntu-latest
+
+    steps:
+      # Paso 1: Hacer checkout del código de la rama 'main'
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          ref: main # Asegura que se hace checkout en la rama main
+
+      # Paso 2: Instalar las dependencias necesarias usando npm
+      - name: Install dependencies
+        run: npm install
+
+      # Paso 3: Desplegar a Railway con reintentos en caso de fallos
+      - name: Deploy to Railway with retries
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }} # Usa el token de Railway almacenado en los secretos de GitHub
+        run: |
+          for i in {1..3}; do
+            npx railway up && break
+            echo "Retry $i failed, trying again..."
+            sleep 10
+          done
